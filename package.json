@@ -20,5 +20,8 @@
   "gitHead": "db055d670dd139c52e1741769e343baa56a8bdf0",
   "bugs": {
     "url": "https://github.com/btford/astral/issues"
+  },
+  "dependencies": {
+    "clone": "~0.1.9"
   }
 }

@@ -1,0 +1,24 @@
+{
+  "name": "astral",
+  "version": "0.0.0",
+  "description": "AST tooling framework for JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/btford/astral.git"
+  },
+  "keywords": [
+    "ast",
+    "tool"
+  ],
+  "author": "Brian Ford",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "db055d670dd139c52e1741769e343baa56a8bdf0",
+  "bugs": {
+    "url": "https://github.com/btford/astral/issues"
+  }
+}

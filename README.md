@@ -10,6 +10,10 @@ Various [passes](https://github.com/btford/astral-pass) are registered in Astral
 Esprima (parser) creates AST.
 Astral runs the passes in order based on their prerequisites.
 
+## Install
+
+`npm install astral`
+
 ## Example
 
 ```javascript

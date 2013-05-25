@@ -9,3 +9,5 @@ Various "passes" are registered in Astral.
 Esprima (parser) creates AST.
 Astral runs the passes in order based on their prerequisites.
 
+## License
+MIT

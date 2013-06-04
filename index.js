@@ -1,5 +1,5 @@
 
-var deepApply = require('./lib/deep-apply');
+var clone = require('clone');
 
 var Astral = function () {
   this._passes = {};
@@ -8,65 +8,67 @@ var Astral = function () {
 
 Astral.prototype.register = function (pass) {
   if (!pass.name) {
-    throw new Error("Expected pass to have a name");
+    throw new Error("Expected '" + pass.name + "' pass to have a name");
+  }
+  if (!pass.run) {
+    throw new Error("Expected '" + pass.name + "' pass to have a 'run' method");
+  }
+  if (!pass.prereqs || !(pass.prereqs instanceof Array)) {
+    throw new Error("Expected '" + pass.name + "' pass to have a 'prereqs' Array");
   }
   this._passes[pass.name] = pass;
 };
 
+// modifies the original AST
 Astral.prototype.run = function (ast) {
 
-  this._order().forEach(function (name) {
-    this._runPass(name, ast);
+  this._order().forEach(function (pass) {
+    this._info[pass.name] = pass.run(ast, clone(this._info));
   }, this);
 
   return ast;
 };
 
-Astral.prototype._runPass = function (name, ast) {
-  var pass = this._passes[name];
-  if (pass.type === 'info') {
-    return this._runInfoPass(pass, name);
-  }
-  if (pass.type === 'transform') {
-    return this._runTransformPass(pass, name);
-  }
-  return new Error("Expected '" + name + "' to have type of either 'info' or 'transform'");
-};
 
-Astral.prototype._runInfoPass = function (pass, ast) {
-  var info = this._info;
-  deepApply(ast, pass._matches, function (chunk) {
-    pass._doer(info, clone(chunk));
-  });
-};
-
-Astral.prototype._runTransformPass = function (pass, ast) {
-  var info = clone(this._info);
-  deepApply(ast, pass._matches, function (chunk) {
-    pass._doer(chunk, info);
-  });
-};
-
-// order the passes
+// returns the passes in order based on prereqs
 Astral.prototype._order = function (ast) {
 
+  var passes = this._passes;
+
   var order = [];
-  var toOrder = Object.keys(this._passes).length;
+
+  var toOrder = Object.keys(passes).map(function (name) {
+    return passes[name];
+  }, this);
+
   var progress = false;
 
   do {
+    var add = toOrder.filter(function (pass) {
+      return !pass.prereqs.
+        map(function (prereq) {
+          return passes[prereq];
+        }).
+        filter(function (prereq) {
+          return prereq;
+        }).
+        some(function (prereq) {
+          return order.indexOf(prereq) === -1;
+        });
+    });
+    if (add.length > 0) {
+      progress = true;
+      
+      order = order.concat(add);
+      add.forEach(function (a) {
+        toOrder.splice(toOrder.indexOf(a), 1);
+      });
+    }
+  } while (toOrder.length > 0 && progress);
 
-  } while (progress || toOrder.length > 0);
 
   if (toOrder > 0) {
     return new Error("Unable to order " + toOrder.toString());
-  }
-
-  // TODO: ordering constraints
-  for (var name in this._passes) {
-    if (this._passes.hasOwnProperty(name)) {
-      this._passes[name](ast);
-    }
   }
 
   return order;

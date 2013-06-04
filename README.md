@@ -47,6 +47,29 @@ var newSrc = escodegen.generate(newAst);
 console.log(newSrc);
 ```
 
+## Writing a Pass
+
+A pass is just an object with three properties:
+
+```
+var myPass = {
+  name: 'my:pass',
+  prereqs: [],
+  run: function (ast, info) {
+    return {};
+  }
+}
+```
+
+### name
+The name of the pass. Used to reference prereqs and info.
+
+### prereqs
+An array of passes expected to be run before this pass is run.
+
+### run
+The function for transforming the AST. It takes two arguments: `ast`, and `info`. It should return an `info` object to be associated with this pass.
+
 ## Why?
 
 Source transform tools all have to solve the same problems:
@@ -91,7 +114,7 @@ Currently, both of these tools separately read files, parse into an AST, generat
 #### [Grunt](http://gruntjs.com/)
 Grunt is a task runner.
 It is often used as a build tool, concatenating and minifying files.
-This makes Grunt great for a wide variety of cases, but a poor choice for source transforms.
+Grunt typically runs on a per-file basis, which makes it great for a wide variety of cases, but a poor choice for source transforms since you typically end up reading/writing the same file multiple times.
 You can think of Astral as "Grunt tasks, but for ASTs instead of files."
 You could write a Grunt task to run Astral passes to integrate the two.
 

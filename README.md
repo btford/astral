@@ -1,8 +1,10 @@
 # Astral
 
-AST tooling framework for JavaScript focused on modularity and performance.
+AST tooling framework* for JavaScript focused on modularity and performance.
 The goal is to make it easy to create, share, and combine tools that operate on ASTs.
 The architecture inspired by llvm.
+
+<small>*It's not so much a framework as it is a set of conventions that make it easier to combine static analysis and code transformation tools.</small>
 
 ## How it Works
 

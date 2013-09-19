@@ -22,6 +22,7 @@
     "url": "https://github.com/btford/astral/issues"
   },
   "dependencies": {
-    "clone": "~0.1.9"
+    "clone": "~0.1.9",
+    "source-map": "~0.1.29"
   }
 }
